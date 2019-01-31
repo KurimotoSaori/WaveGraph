@@ -7,88 +7,68 @@
 //
 
 import UIKit
+import AVFoundation
 
-class SampleViewController: UIViewController {
+class SampleViewController: UIViewController, AVAudioRecorderDelegate {
 
-    @IBOutlet weak var baseView: PlotView!
+    @IBOutlet var label: UILabel!
+    @IBOutlet var recordButton: UIButton!
+    @IBOutlet var playButton: UIButton!
+
+    var audioRecorder: AVAudioRecorder!
+    var audioPlayer: AVAudioPlayer!
+    var isRecording = false
+    var isPlaying = false
+
+    var timer = Timer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0, y: 100))
-        path.addLine(to: CGPoint(x: 50, y: 200))
-//        path.addLine(to: CGPoint(x: 100, y: 100))
-//        path.addLine(to: CGPoint(x: 150, y: 250))
+        let session = AVAudioSession.sharedInstance()
+        try! session.setCategory(AVAudioSession.Category.record, mode: .default, options: [])
+        try! session.setActive(true)
 
-        path.lineWidth = 20.0 // 線の太さ
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 44100,
+            AVNumberOfChannelsKey: 2,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
 
-        let lineLayer = CAShapeLayer()
-        lineLayer.strokeColor = UIColor.red.cgColor
-        lineLayer.fillColor = UIColor.clear.cgColor
-        lineLayer.lineWidth = 1.0
-        lineLayer.path = path.cgPath
+        audioRecorder = try! AVAudioRecorder(url: getURL(), settings: settings)
 
-
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.duration = 1.0
-        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-        animation.fromValue = 0.0
-        animation.toValue = 1.0
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-
-        view.layer.addSublayer(lineLayer)
-        lineLayer.add(animation, forKey: nil)
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { (timer) in
+            self.audioRecorder.updateMeters()
+            print("aaaaaaaa: \(self.audioRecorder.peakPower(forChannel: 0))")
+        })
     }
 
     @IBAction func tappedButton(_ sender: Any) {
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 50, y: 200))
-        path.addLine(to: CGPoint(x: 100, y: 100))
-        path.lineWidth = 20.0 // 線の太さ
+        if !isRecording {
 
-        let lineLayer = CAShapeLayer()
-        lineLayer.strokeColor = UIColor.red.cgColor
-        lineLayer.fillColor = UIColor.clear.cgColor
-        lineLayer.lineWidth = 1.0
-        lineLayer.path = path.cgPath
+            audioRecorder.delegate = self
+            audioRecorder.record()
 
+            isRecording = true
 
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.duration = 1.0
-        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-        animation.fromValue = 0.0
-        animation.toValue = 1.0
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
+            label.text = "録音中"
+            recordButton.setTitle("STOP", for: .normal)
+            playButton.isEnabled = false
+        }else{
+            audioRecorder.stop()
+            isRecording = false
 
-        view.layer.addSublayer(lineLayer)
-        lineLayer.add(animation, forKey: nil)
+            label.text = "待機中"
+            recordButton.setTitle("RECORD", for: .normal)
+            playButton.isEnabled = true
+        }
     }
-}
 
-class PlotView: UIView {
-
-    override func draw(_ rect: CGRect) {
-        let context :CGContext! = UIGraphicsGetCurrentContext()
-        context.setLineWidth(2.0)
-
-        // 設定開始
-        context.beginPath()
-        // グラフ上の座標を設定する
-        context.move(to: CGPoint(x: 0, y: 100))
-        context.addLine(to: CGPoint(x: 0, y: 100))
-        context.addLine(to: CGPoint(x: 100, y: 120))
-        // 描画
-        context.strokePath()
-
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0, y: 100))
-        path.addLine(to: CGPoint(x: 0, y: 100))
-
-        let shapeLary = CAShapeLayer()
-        shapeLary.path = path.cgPath
-        self.layer.addSublayer(shapeLary)
+    func getURL() -> URL{
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let docsDirect = paths[0]
+        let url = docsDirect.appendingPathComponent("recording.m4a")
+        return url
     }
 }

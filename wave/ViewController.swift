@@ -36,14 +36,11 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             self.scrollView.contentOffset = CGPoint(x: self.baseView.frame.width, y: 0)
         }
 
-        let step = CGFloat(self.baseView.frame.width / 10)
+        let step = CGFloat(self.baseView.frame.width / 100)
         //timer処理
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { (timer) in
             self.count += 1
-//            self.count値をコンソールへ出力
-            print("aaaaa: \(CGFloat(self.count)) \(step * self.count)")
-
-            self.baseView.append(toX: Int(self.count))
+            self.baseView.append(toX: Int(step * self.count))
         })
     }
 
@@ -60,45 +57,24 @@ class ViewController: UIViewController, UIScrollViewDelegate {
 }
 
 class GraphBaseView: UIView {
-
-    let lineLayer = CAShapeLayer()
     var lastPoint: CGPoint!
-    var yList = [10, 200, 100, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 10, 200, 100, 250]
     let columnXPoint = { (column:Int) -> CGFloat in
-//        if column == 0 {
-//            return UIScreen.main.bounds.width / 2
-//        }
-        let spacer = 20
+        let spacer = 5
         var x:CGFloat = CGFloat(column) * CGFloat(spacer)
-        x += 10 + 2
-        return x
+        x += 5 + 2
+        return UIScreen.main.bounds.width / 2 + x
     }
 
     override func draw(_ rect: CGRect) {
         let lineLayer = CAShapeLayer()
-        var path = UIBezierPath()
-        path.move(to: CGPoint(x: self.columnXPoint(0), y: CGFloat(yList[0])))
+        let path = UIBezierPath()
 
-        let nextPoint = CGPoint(x: self.columnXPoint(1), y: CGFloat(10))
+        let nextPoint = CGPoint(x: UIScreen.main.bounds.width / 2, y: CGFloat(10))
+        path.move(to: nextPoint)
         lastPoint = nextPoint
-        path.addLine(to: nextPoint)
-        path.lineWidth = 20.0 // 線の太さ
-
-        lineLayer.strokeColor = UIColor.red.cgColor
-        lineLayer.fillColor = UIColor.clear.cgColor
-        lineLayer.lineWidth = 1.0
-        lineLayer.path = path.cgPath
-
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.duration = 1.0
-        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-        animation.fromValue = 0.0
-        animation.toValue = 1.0
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
+        path.lineWidth = 20.0
 
         self.layer.addSublayer(lineLayer)
-        lineLayer.add(animation, forKey: nil)
     }
 
     func append(toX: Int) {
@@ -110,6 +86,7 @@ class GraphBaseView: UIView {
         path.addLine(to: nextPoint)
         path.lineWidth = 20.0
 
+        let lineLayer = CAShapeLayer()
         lineLayer.strokeColor = UIColor.red.cgColor
         lineLayer.fillColor = UIColor.clear.cgColor
         lineLayer.lineWidth = 1.0
@@ -128,17 +105,17 @@ class GraphBaseView: UIView {
     }
 
     func timeStop() {
-        let pausedTime = lineLayer.convertTime(CACurrentMediaTime(), from: nil)
-        lineLayer.speed = 0
-        lineLayer.timeOffset = pausedTime
+//        let pausedTime = lineLayer.convertTime(CACurrentMediaTime(), from: nil)
+//        lineLayer.speed = 0
+//        lineLayer.timeOffset = pausedTime
     }
 
     func timeStart() {
-        let pausedTime = lineLayer.timeOffset
-        lineLayer.speed = 1
-        lineLayer.timeOffset = 0
-        lineLayer.beginTime = 0
-        let timeSincePause: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-        lineLayer.beginTime = timeSincePause
+//        let pausedTime = lineLayer.timeOffset
+//        lineLayer.speed = 1
+//        lineLayer.timeOffset = 0
+//        lineLayer.beginTime = 0
+//        let timeSincePause: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
+//        lineLayer.beginTime = timeSincePause
         }
 }
