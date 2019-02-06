@@ -13,6 +13,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var baseView: GraphBaseView!
 
+    let animator = UIViewPropertyAnimator(duration: 30.0, timingParameters: UICubicTimingParameters(animationCurve: .linear))
+
     var count : CGFloat = 0
     var timer = Timer()
 
@@ -21,22 +23,19 @@ class ViewController: UIViewController, UIScrollViewDelegate {
 
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 10.0
+        scrollView.maximumZoomScale = 2.0
 
         self.scrollView.contentOffset = CGPoint(x: 0, y: 0)
     }
 
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        baseView.frame.size = CGSize(width: baseView.frame.width * 1.5, height: baseView.frame.width / 1.5)
-        baseView.layoutIfNeeded()
-    }
-
-    @IBAction func tappedButtomn(_ sender: Any) {
-        UIView.animate(withDuration: 20) {
-            self.scrollView.contentOffset = CGPoint(x: self.baseView.frame.width, y: 0)
+    @IBAction func tappedStartButton(_ sender: Any) {
+        animator.addAnimations {
+            self.scrollView.contentOffset = CGPoint(x: self.scrollView.contentSize.width, y: 0)
         }
 
-        let step = CGFloat(self.baseView.frame.width / 100)
+        animator.startAnimation()
+
+        let step = CGFloat(self.baseView.frame.width / 600)
         //timer処理
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { (timer) in
             self.count += 1
@@ -44,24 +43,29 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         })
     }
 
-    @IBAction func tappedStartButton(_ sender: Any) {
-        baseView.timeStart()
-    }
     @IBAction func tappedStopButton(_ sender: Any) {
-        baseView.timeStop()
+        animator.pauseAnimation()
     }
 
-    @IBAction func append(_ sender: Any) {
-//        baseView.append()
+    @IBAction func tappedExtensionButton(_ sender: Any) {
+
+        let _animator = UIViewPropertyAnimator(duration: 0.5, timingParameters: UICubicTimingParameters(animationCurve: .linear))
+        _animator.addAnimations {
+            self.baseView.transform = CGAffineTransform(scaleX: 2,y: 1)
+        }
+        _animator.startAnimation()
+
+        self.baseView.frame.size = CGSize(width: 600, height: 300)
+        self.baseView.layoutIfNeeded()
     }
 }
 
 class GraphBaseView: UIView {
     var lastPoint: CGPoint!
     let columnXPoint = { (column:Int) -> CGFloat in
-        let spacer = 5
+        let spacer = 20
         var x:CGFloat = CGFloat(column) * CGFloat(spacer)
-        x += 5 + 2
+        x += CGFloat(spacer)
         return UIScreen.main.bounds.width / 2 + x
     }
 
@@ -103,19 +107,4 @@ class GraphBaseView: UIView {
         self.layer.addSublayer(lineLayer)
         lineLayer.add(animation, forKey: nil)
     }
-
-    func timeStop() {
-//        let pausedTime = lineLayer.convertTime(CACurrentMediaTime(), from: nil)
-//        lineLayer.speed = 0
-//        lineLayer.timeOffset = pausedTime
-    }
-
-    func timeStart() {
-//        let pausedTime = lineLayer.timeOffset
-//        lineLayer.speed = 1
-//        lineLayer.timeOffset = 0
-//        lineLayer.beginTime = 0
-//        let timeSincePause: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-//        lineLayer.beginTime = timeSincePause
-        }
 }

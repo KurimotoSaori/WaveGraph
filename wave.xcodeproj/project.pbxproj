@@ -16,7 +16,6 @@
 		22BE84E321FC3A7400461864 /* waveUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22BE84E221FC3A7400461864 /* waveUITests.swift */; };
 		22BE84F221FC4AE300461864 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BE84F121FC4AE300461864 /* GLKit.framework */; };
 		22BE84F421FC4AF000461864 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BE84F321FC4AF000461864 /* OpenGLES.framework */; };
-		22BE84F821FE947900461864 /* SampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22BE84F721FE947900461864 /* SampleViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,7 +51,6 @@
 		22BE84E421FC3A7400461864 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22BE84F121FC4AE300461864 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		22BE84F321FC4AF000461864 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		22BE84F721FE947900461864 /* SampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,7 +106,6 @@
 			children = (
 				22BE84C221FC3A6F00461864 /* AppDelegate.swift */,
 				22BE84C421FC3A6F00461864 /* ViewController.swift */,
-				22BE84F721FE947900461864 /* SampleViewController.swift */,
 				22BE84C621FC3A6F00461864 /* Main.storyboard */,
 				22BE84C921FC3A7400461864 /* Assets.xcassets */,
 				22BE84CB21FC3A7400461864 /* LaunchScreen.storyboard */,
@@ -277,7 +274,6 @@
 			files = (
 				22BE84C521FC3A6F00461864 /* ViewController.swift in Sources */,
 				22BE84C321FC3A6F00461864 /* AppDelegate.swift in Sources */,
-				22BE84F821FE947900461864 /* SampleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
